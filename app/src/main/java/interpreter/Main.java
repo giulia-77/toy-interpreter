@@ -1,7 +1,11 @@
 package interpreter;
 
+import interpreter.view.Examples;
+import interpreter.view.View;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Toy Interpreter pornit!");
+        View view = new View(Examples.getAll());
+        view.start();
     }
 }
