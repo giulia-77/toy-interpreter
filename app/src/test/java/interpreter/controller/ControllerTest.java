@@ -21,7 +21,7 @@ class ControllerTest {
         PrgState state = new PrgState(new MyStack<>(), new MyDictionary<>(),
                 new MyList<>(), program);
         Controller controller = new Controller(new Repository(state));
-        controller.setDisplayFlag(false); // fără afișare la consolă în timpul testelor
+        controller.setDisplayFlag(false); // fara afisare la consola în timpul testelor
         controller.allStep();
         return state;
     }
@@ -50,7 +50,7 @@ class ControllerTest {
     @Test
     void oneStepOnEmptyStackThrows() {
         PrgState emptyState = new PrgState(new MyStack<>(), new MyDictionary<>(), new MyList<>(), new NopStmt());
-        // Scoatem NopStmt pus la inițializare
+        // scoatem NopStmt pus la initializare
         try {
             emptyState.getExeStack().pop();
         } catch (Exception ignored) {}
