@@ -62,7 +62,7 @@ public class View {
             IStmt selectedProgram = programs.get(choice - 1);
 
             PrgState prgState = PrgState.of(selectedProgram);
-            IRepository repo = new Repository(prgState);
+            IRepository repo = new Repository("log1.txt");
             this.controller = new Controller(repo);
 
             System.out.println("Program " + choice + " selected successfully!");
