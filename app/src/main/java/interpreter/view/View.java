@@ -61,12 +61,7 @@ public class View {
 
             IStmt selectedProgram = programs.get(choice - 1);
 
-            PrgState prgState = new PrgState(
-                    new MyStack<>(),
-                    new MyDictionary<>(),
-                    new MyList<>(),
-                    selectedProgram
-            );
+            PrgState prgState = PrgState.of(selectedProgram);
             IRepository repo = new Repository(prgState);
             this.controller = new Controller(repo);
 
