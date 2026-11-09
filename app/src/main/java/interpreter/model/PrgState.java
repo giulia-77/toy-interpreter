@@ -21,7 +21,7 @@ public class PrgState {
         this.out = out;
         this.fileTable=fileTable;
         this.originalProgram = program;
-        exeStack.push(program);
+        this.exeStack.push(program);
     }
 
     public IStack<IStmt> getExeStack() {
@@ -52,11 +52,35 @@ public class PrgState {
         return originalProgram;
     }
 
+    public IDictionary<StringValue, BufferedReader> getFileTable(){
+        return fileTable;
+    }
     public static PrgState of (IStmt program){
         return new PrgState(new MyStack<>(), new MyDictionary<>(),new MyList<>(), new MyDictionary<>(), program);
     }
+    public String toLogString(){
+        StringBuilder sb=new StringBuilder();
+        sb.append("ExeStack:\n");
+        for(IStmt s: exeStack.toList()){
+            sb.append(s.toString()).append("\n");
+        }
+        sb.append("SymTable:\n");
+        for(var entry: symTable.toMap().entrySet()){
+            sb.append(entry.getKey()).append("->").append(entry.getValue()).append("\n");
+        }
+        sb.append("Output:\n");
+        for(IValue v: out.toList()){
+            sb.append(v.toString()).append("\n");
+        }
+        sb.append("FileTable:\n");
+        for(StringValue f: fileTable.toMap().keySet()){
+            sb.append(f.val()).append("\n");
+        }
+        return sb.toString();
+    }
+
     @Override
     public String toString() {
-        return "execution stack: " + exeStack + "\nsymbol table: " + symTable + "\noutput list: " + out + "\n";
+        return "execution stack: " + exeStack + "\nsymbol table: " + symTable + "\noutput list: " + out + "\nfile table: "+fileTable+"\n";
     }
 }
