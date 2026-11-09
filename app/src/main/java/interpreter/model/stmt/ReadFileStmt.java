@@ -11,7 +11,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 
-public record ReadFileStatement(IExp exp, String varName) implements IStmt {
+public record ReadFileStmt(IExp exp, String varName) implements IStmt {
     @Override
     public PrgState execute(PrgState state) throws MyException {
         var symTable=state.getSymTable();

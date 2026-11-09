@@ -10,27 +10,39 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Repository implements IRepository{
+public class Repository implements IRepository {
     private List<PrgState> prgList;
     private String logFilePath;
-    public Repository(String logFilePath){
-        this.prgList=new ArrayList<>();
-        this.logFilePath=logFilePath;
+
+    // Constructorul 1: folosit în Main (doar calea fișierului)
+    public Repository(String logFilePath) {
+        this.prgList = new ArrayList<>();
+        this.logFilePath = logFilePath;
     }
+
+    // Constructorul 2: folosit în teste (starea inițială + calea fișierului)
+    public Repository(PrgState initial, String logFilePath) {
+        this.prgList = new ArrayList<>();
+        this.prgList.add(initial);
+        this.logFilePath = logFilePath;
+    }
+
     @Override
-    public void addPrg(PrgState prg){
+    public void addPrg(PrgState prg) {
         prgList.add(prg);
     }
+
     @Override
     public PrgState getCrtPrg() {
-        if(prgList.isEmpty()){
+        if (prgList.isEmpty()) {
             return null;
         }
         return prgList.get(0);
     }
+
     @Override
     public void logPrgStateExec(PrgState prgState) throws MyException {
-        try (PrintWriter logFile = new PrintWriter(new BufferedWriter(new FileWriter(logFilePath, false)))) {
+        try (PrintWriter logFile = new PrintWriter(new BufferedWriter(new FileWriter(logFilePath, true)))) {
             logFile.println(prgState.toLogString());
         } catch (IOException e) {
             throw new MyException("Error writing to log file: " + e.getMessage());
