@@ -9,9 +9,10 @@ import interpreter.repository.IRepository;
 
 public class Controller {
     private final IRepository repo;
-    private boolean displayFlag = true;
-    public Controller(IRepository repo) {
+    private boolean displayFlag;
+    public Controller(IRepository repo, boolean displayFlag) {
         this.repo = repo;
+        this.displayFlag=displayFlag;
     }
 
     public boolean isDisplayFlag() {
@@ -34,9 +35,11 @@ public class Controller {
     public void allStep() throws MyException {
         PrgState prg = repo.getCrtPrg();
         repo.logPrgStateExec(prg);
+        display(prg);
         while (!prg.getExeStack().isEmpty()) {
             oneStep(prg);
             repo.logPrgStateExec(prg);
+            display(prg);
         }
     }
     private void display(PrgState state) {

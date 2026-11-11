@@ -1,4 +1,5 @@
 package interpreter.model.stmt;
+import interpreter.model.type.StringType;
 import org.junit.jupiter.api.AfterEach;
 import interpreter.exceptions.MyException;
 import interpreter.exceptions.StatementException;
@@ -107,5 +108,11 @@ class FileStmtTest {
     @Test
     void closeRFileNotOpenThrows() {
         assertThrows(StatementException.class, () -> new CloseRFileStmt(fileExp).execute(state));
+    }
+    @Test
+    void readFileVariableNotIntThrows() throws MyException {
+        new VarDeclStmt("s", new StringType()).execute(state);
+        new OpenRFileStmt(fileExp).execute(state);
+        assertThrows(StatementException.class, () -> new ReadFileStmt(fileExp, "s").execute(state));
     }
 }

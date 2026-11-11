@@ -8,6 +8,6 @@ public record StringValue(String val) implements IValue {
         return new StringType();
     }
     @Override public String toString(){
-        return val;
+        return "\""+ val + "\"" ;
     }
 }

@@ -24,7 +24,7 @@ public class Main {
             PrgState prgState = PrgState.of(program);
             repo.addPrg(prgState);
 
-            var controller = new Controller(repo);
+            var controller = new Controller(repo,true);
             menu.addCommand(new RunExampleCommand(
                     String.valueOf(i + 1),
                     program.toString(),

@@ -1,6 +1,7 @@
 package interpreter.repository;
 
 import interpreter.exceptions.MyException;
+import interpreter.exceptions.RepositoryException;
 import interpreter.model.PrgState;
 
 import java.io.BufferedWriter;
@@ -45,7 +46,7 @@ public class Repository implements IRepository {
         try (PrintWriter logFile = new PrintWriter(new BufferedWriter(new FileWriter(logFilePath, true)))) {
             logFile.println(prgState.toLogString());
         } catch (IOException e) {
-            throw new MyException("Error writing to log file: " + e.getMessage());
+            throw new RepositoryException("Error writing to log file " + logFilePath + ":" + e.getMessage());
         }
     }
 
