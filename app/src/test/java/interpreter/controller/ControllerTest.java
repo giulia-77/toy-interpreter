@@ -22,9 +22,7 @@ class ControllerTest {
     private PrgState run(IStmt program) throws MyException {
         PrgState state = PrgState.of(program);
         var repo = new Repository(state, dir.resolve("log.txt").toString());
-        Controller controller = new Controller(repo);
-        controller.setDisplayFlag(false);
-        controller.allStep();
+        new Controller(repo,false).allStep();
         return state;
     }
 

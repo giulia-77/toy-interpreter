@@ -54,12 +54,14 @@ public class PrgState {
 
     public IDictionary<StringValue, BufferedReader> getFileTable(){
         return fileTable;
-    }
+    } //adaugat in constructor
+    //functie cu toate structurile goale
     public static PrgState of (IStmt program){
         return new PrgState(new MyStack<>(), new MyDictionary<>(),new MyList<>(), new MyDictionary<>(), program);
     }
+    //construieste textul scris in fisierul de log
     public String toLogString() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(); //lipesc textul bucata cu bucata
 
         sb.append("ExeStack:\n");
         for (IStmt s : exeStack.toList()) {
@@ -79,12 +81,12 @@ public class PrgState {
 
         sb.append("FileTable:\n");
         for (StringValue f : fileTable.toMap().keySet()) {
-            sb.append(f.val()).append("\n");
+            sb.append(f.val()).append("\n"); //adaugam valoarea sirului de caractere ca sa vedem cate fisiere sunt deschise in acel moment
         }
 
-        return sb.toString();
+        return sb.toString(); //aici returnez tot textul
     }
-
+    //pt ecran
     @Override
     public String toString() {
         return "execution stack: " + exeStack + "\nsymbol table: " + symTable + "\noutput list: " + out + "\nfile table: "+fileTable+"\n";

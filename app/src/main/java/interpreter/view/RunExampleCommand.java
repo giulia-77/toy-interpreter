@@ -8,7 +8,7 @@ public class RunExampleCommand extends Command{
     private boolean executed = false;
 
     public RunExampleCommand(String key, String description, Controller controller) {
-        super(key, description);
+        super(key, description); //trimitem parametrii catre clasa parinte sa i initializeze
         this.controller = controller;
     }
 

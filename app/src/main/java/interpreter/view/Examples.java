@@ -12,7 +12,6 @@ import interpreter.model.value.StringValue;
 import java.util.List;
 
 public class Examples {
-    // Ex1: int v; v = 2; print(v)
     public static final IStmt ex1 = new CompStmt(
             new VarDeclStmt("v", new IntType()),
             new CompStmt(
@@ -21,7 +20,6 @@ public class Examples {
             )
     );
 
-    // Ex2: int a; int b; a = 2 + 3 * 5; b = a + 1; print(b)
     public static final IStmt ex2 = new CompStmt(
             new VarDeclStmt("a", new IntType()),
             new CompStmt(
@@ -44,7 +42,6 @@ public class Examples {
             )
     );
 
-    // Ex3: bool a; int v; a = true; (if a then v = 2 else v = 3); print(v)
     public static final IStmt ex3 = new CompStmt(
             new VarDeclStmt("a", new BoolType()),
             new CompStmt(

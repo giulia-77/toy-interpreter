@@ -15,13 +15,13 @@ public class Repository implements IRepository {
     private List<PrgState> prgList;
     private String logFilePath;
 
-    // Constructorul 1: folosit în Main (doar calea fișierului)
+    //folosit in main
     public Repository(String logFilePath) {
         this.prgList = new ArrayList<>();
         this.logFilePath = logFilePath;
     }
 
-    // Constructorul 2: folosit în teste (starea inițială + calea fișierului)
+    // folosit în teste (starea initiala + calea fișierului)
     public Repository(PrgState initial, String logFilePath) {
         this.prgList = new ArrayList<>();
         this.prgList.add(initial);

@@ -19,9 +19,9 @@ public record OpenRFileStmt(IExp exp) implements IStmt{
         if (fileTable.isDefined(fileName))
             throw new StatementException("openRFile: " + fileName + " is already open");
         try {
-            // no try-with-resources: the file must stay open until closeRFile
+            //scoatem textul din string val, deschidem fisierul si citim din el o linie intreaga
             var reader = new BufferedReader(new FileReader(fileName.val()));
-            fileTable.put(fileName, reader);
+            fileTable.put(fileName, reader); //adaugam perechea nume->cititor in fileTable
         } catch (IOException e) {
             throw new StatementException("openRFile: cannot open " + fileName
                     + ": " + e.getMessage());
