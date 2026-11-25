@@ -1,94 +1,91 @@
 package interpreter.model;
 
-import interpreter.model.adt.*;
+import interpreter.model.adt.IDictionary;
+import interpreter.model.adt.IHeap;
+import interpreter.model.adt.IList;
+import interpreter.model.adt.IStack;
+import interpreter.model.adt.MyDictionary;
+import interpreter.model.adt.MyHeap;
+import interpreter.model.adt.MyList;
+import interpreter.model.adt.MyStack;
 import interpreter.model.stmt.IStmt;
 import interpreter.model.value.IValue;
-import interpreter.model.value.StringValue;
 
 import java.io.BufferedReader;
+import java.util.TreeMap;
 
 public class PrgState {
     private IStack<IStmt> exeStack;
     private IDictionary<String, IValue> symTable;
     private IList<IValue> out;
-    private IDictionary<StringValue, BufferedReader> fileTable;
-    private final IStmt originalProgram;
+    private IDictionary<String, BufferedReader> fileTable;
+    private IHeap heap;
+    private IStmt originalProgram;
 
-    public PrgState(IStack<IStmt> exeStack, IDictionary<String, IValue> symTable,
-                    IList<IValue> out, IDictionary<StringValue, BufferedReader> fileTable, IStmt program) {
+    public PrgState(IStack<IStmt> exeStack,
+                    IDictionary<String, IValue> symTable,
+                    IList<IValue> out,
+                    IDictionary<String, BufferedReader> fileTable,
+                    IHeap heap,
+                    IStmt program) {
         this.exeStack = exeStack;
         this.symTable = symTable;
         this.out = out;
-        this.fileTable=fileTable;
+        this.fileTable = fileTable;
+        this.heap = heap;
         this.originalProgram = program;
         this.exeStack.push(program);
+    }
+
+    public static PrgState of(IStmt program) {
+        return new PrgState(
+                new MyStack<>(),
+                new MyDictionary<>(),
+                new MyList<>(),
+                new MyDictionary<>(),
+                new MyHeap(),
+                program
+        );
     }
 
     public IStack<IStmt> getExeStack() {
         return exeStack;
     }
 
-    public void setExeStack(IStack<IStmt> exeStack) {
-        this.exeStack = exeStack;
-    }
-
     public IDictionary<String, IValue> getSymTable() {
         return symTable;
-    }
-
-    public void setSymTable(IDictionary<String, IValue> symTable) {
-        this.symTable = symTable;
     }
 
     public IList<IValue> getOut() {
         return out;
     }
 
-    public void setOut(IList<IValue> out) {
-        this.out = out;
+    public IDictionary<String, BufferedReader> getFileTable() {
+        return fileTable;
+    }
+
+    public IHeap getHeap() {
+        return heap;
     }
 
     public IStmt getOriginalProgram() {
         return originalProgram;
     }
 
-    public IDictionary<StringValue, BufferedReader> getFileTable(){
-        return fileTable;
-    } //adaugat in constructor
-    //functie cu toate structurile goale
-    public static PrgState of (IStmt program){
-        return new PrgState(new MyStack<>(), new MyDictionary<>(),new MyList<>(), new MyDictionary<>(), program);
+    public String logString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("ExeStack:\n").append(exeStack).append("\n");
+        sb.append("SymTable:\n").append(symTable).append("\n");
+        sb.append("Out:\n").append(out).append("\n");
+        sb.append("FileTable:\n").append(fileTable).append("\n");
+        sb.append("Heap:\n");
+        new TreeMap<>(heap.getContent()).forEach((addr, val) ->
+                sb.append(addr).append(" --> ").append(val).append("\n"));
+        return sb.toString();
     }
-    //construieste textul scris in fisierul de log
-    public String toLogString() {
-        StringBuilder sb = new StringBuilder(); //lipesc textul bucata cu bucata
 
-        sb.append("ExeStack:\n");
-        for (IStmt s : exeStack.toList()) {
-            sb.append(s).append("\n");
-        }
-
-        sb.append("SymTable:\n");
-        for (var entry : symTable.toMap().entrySet()) {
-            sb.append(entry.getKey()).append(" --> ")
-                    .append(entry.getValue()).append("\n");
-        }
-
-        sb.append("Out:\n");
-        for (IValue v : out.toList()) {
-            sb.append(v).append("\n");
-        }
-
-        sb.append("FileTable:\n");
-        for (StringValue f : fileTable.toMap().keySet()) {
-            sb.append(f.val()).append("\n"); //adaugam valoarea sirului de caractere ca sa vedem cate fisiere sunt deschise in acel moment
-        }
-
-        return sb.toString(); //aici returnez tot textul
-    }
-    //pt ecran
     @Override
     public String toString() {
-        return "execution stack: " + exeStack + "\nsymbol table: " + symTable + "\noutput list: " + out + "\nfile table: "+fileTable+"\n";
+        return logString();
     }
 }
