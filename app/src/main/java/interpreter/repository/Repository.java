@@ -44,7 +44,7 @@ public class Repository implements IRepository {
     @Override
     public void logPrgStateExec(PrgState prgState) throws MyException {
         try (PrintWriter logFile = new PrintWriter(new BufferedWriter(new FileWriter(logFilePath, true)))) {
-            logFile.println(prgState.toLogString());
+            logFile.println(prgState.logString());
         } catch (IOException e) {
             throw new RepositoryException("Error writing to log file " + logFilePath + ":" + e.getMessage());
         }

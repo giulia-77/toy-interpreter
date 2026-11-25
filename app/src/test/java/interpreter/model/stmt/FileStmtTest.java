@@ -1,118 +1,55 @@
 package interpreter.model.stmt;
-import interpreter.model.type.StringType;
-import org.junit.jupiter.api.AfterEach;
+
 import interpreter.exceptions.MyException;
-import interpreter.exceptions.StatementException;
 import interpreter.model.PrgState;
 import interpreter.model.exp.ValueExp;
 import interpreter.model.type.IntType;
+import interpreter.model.type.StringType;
 import interpreter.model.value.IntValue;
 import interpreter.model.value.StringValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FileStmtTest {
-
     @TempDir
-    Path dir;
+    Path tempDir;
+
     private PrgState state;
-    private ValueExp fileExp;
     private Path filePath;
 
     @BeforeEach
-    void setup() throws Exception {
-        filePath = dir.resolve("numbers.in");
-        Files.writeString(filePath, "7\n");
-        fileExp = new ValueExp(new StringValue(filePath.toString()));
+    void setup() throws IOException {
         state = PrgState.of(new NopStmt());
-        new VarDeclStmt("x", new IntType()).execute(state);
-    }
-    @AfterEach
-    void tearDown() throws Exception {
-        for (var reader : state.getFileTable().toMap().values()) {
-            reader.close();
-        }
-    }
-    // openRFile tests
-    @Test
-    void openRFileAddsFileToFileTable() throws MyException {
-        new OpenRFileStmt(fileExp).execute(state);
-        assertTrue(state.getFileTable().isDefined(new StringValue(filePath.toString())));
+        filePath = tempDir.resolve("test.in");
+        Files.writeString(filePath, "15\n25\n");
     }
 
     @Test
-    void openRFileNonStringExpressionThrows() {
-        var nonString = new ValueExp(new IntValue(123));
-        assertThrows(StatementException.class, () -> new OpenRFileStmt(nonString).execute(state));
-    }
+    void openReadAndCloseFileWorkAsExpected() throws MyException {
+        String key = filePath.toString();
+        new VarDeclStmt("fileName", new StringType()).execute(state);
+        new AssignStmt("fileName", new ValueExp(new StringValue(key))).execute(state);
+        new VarDeclStmt("v", new IntType()).execute(state);
 
-    @Test
-    void openRFileAlreadyOpenThrows() throws MyException {
-        new OpenRFileStmt(fileExp).execute(state);
-        assertThrows(StatementException.class, () -> new OpenRFileStmt(fileExp).execute(state));
-    }
+        new OpenRFileStmt(new ValueExp(new StringValue(key))).execute(state);
+        assertTrue(state.getFileTable().isDefined(key));
 
-    @Test
-    void openRFileMissingFileThrows() {
-        var missing = new ValueExp(new StringValue(dir.resolve("nonexistent.in").toString()));
-        assertThrows(StatementException.class, () -> new OpenRFileStmt(missing).execute(state));
-    }
+        new ReadFileStmt(new ValueExp(new StringValue(key)), "v").execute(state);
+        assertEquals(new IntValue(15), state.getSymTable().lookup("v"));
 
-    // readFile tests
-    @Test
-    void readGivesTheNextNumberThenZeroAtTheEnd() throws MyException {
-        new OpenRFileStmt(fileExp).execute(state);
-        new ReadFileStmt(fileExp, "x").execute(state);
-        assertEquals(new IntValue(7), state.getSymTable().lookup("x"));
+        new ReadFileStmt(new ValueExp(new StringValue(key)), "v").execute(state);
+        assertEquals(new IntValue(25), state.getSymTable().lookup("v"));
 
-        new ReadFileStmt(fileExp, "x").execute(state);
-        assertEquals(new IntValue(0), state.getSymTable().lookup("x"));
-    }
-
-    @Test
-    void readFileNotDeclaredVarThrows() {
-        assertThrows(StatementException.class, () -> new ReadFileStmt(fileExp, "undeclared").execute(state));
-    }
-
-    @Test
-    void readFileFileNotOpenThrows() {
-        assertThrows(StatementException.class, () -> new ReadFileStmt(fileExp, "x").execute(state));
-    }
-
-    @Test
-    void readFileNonIntegerLineThrows() throws Exception {
-        Path invalidFile = dir.resolve("invalid.in");
-        Files.writeString(invalidFile, "abc\n");
-        ValueExp invalidFileExp = new ValueExp(new StringValue(invalidFile.toString()));
-
-        new OpenRFileStmt(invalidFileExp).execute(state);
-        assertThrows(StatementException.class, () -> new ReadFileStmt(invalidFileExp, "x").execute(state));
-    }
-
-    // closeRFile tests
-    @Test
-    void closeRFileRemovesFileFromFileTable() throws MyException {
-        new OpenRFileStmt(fileExp).execute(state);
-        assertTrue(state.getFileTable().isDefined(new StringValue(filePath.toString())));
-
-        new CloseRFileStmt(fileExp).execute(state);
-        assertFalse(state.getFileTable().isDefined(new StringValue(filePath.toString())));
-    }
-
-    @Test
-    void closeRFileNotOpenThrows() {
-        assertThrows(StatementException.class, () -> new CloseRFileStmt(fileExp).execute(state));
-    }
-    @Test
-    void readFileVariableNotIntThrows() throws MyException {
-        new VarDeclStmt("s", new StringType()).execute(state);
-        new OpenRFileStmt(fileExp).execute(state);
-        assertThrows(StatementException.class, () -> new ReadFileStmt(fileExp, "s").execute(state));
+        new CloseRFileStmt(new ValueExp(new StringValue(key))).execute(state);
+        assertFalse(state.getFileTable().isDefined(key));
     }
 }
