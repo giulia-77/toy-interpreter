@@ -14,7 +14,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GarbageCollectorFeatureTest {
-
+//simuleaza o adresa inaccesibila, iar alta adresa este referentiata prin heap
     @Test
     void removesUnreachableAndKeepsTransitivelyReachableLocations() {
         List<IValue> symTable = List.of(

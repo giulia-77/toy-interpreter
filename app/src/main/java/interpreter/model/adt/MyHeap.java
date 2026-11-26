@@ -52,6 +52,9 @@ public class MyHeap implements IHeap {
 
     @Override
     public String toString() {
+        //folisim TreeMap ca adresele din heap să fie afișate sortat crescător în fișierul log
+        //entrySet().stream parcurge fiecare pereche key->value din TreeMap
+        //collect(Collectors.joining("\n")) unește toate liniile separate prin newline
         return new TreeMap<>(heap).entrySet().stream()
                 .map(e -> e.getKey() + " --> " + e.getValue())
                 .collect(Collectors.joining("\n"));

@@ -25,7 +25,7 @@ class ReadHeapExpressionTest {
         new VarDeclStmt("v", new RefType(new IntType())).execute(state);
         new NewStmt("v", new ValueExp(new IntValue(20))).execute(state);
     }
-
+    //Ver citirea valorii stocate în heap la adresa indicată de exp
     @Test
     void readHeapReadsStoredValue() throws MyException {
         IExp exp = new ReadHeapExp(new VarExp("v"));

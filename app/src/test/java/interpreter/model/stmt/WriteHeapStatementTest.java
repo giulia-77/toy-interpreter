@@ -25,7 +25,7 @@ class WriteHeapStatementTest {
         new NewStmt("v", new ValueExp(new IntValue(20))).execute(state);
         new VarDeclStmt("x", new IntType()).execute(state);
     }
-
+    //Ver modificarea valorii existente în heap la adresa ținută de var
     @Test
     void writeHeapUpdatesHeapLocation() throws MyException {
         new WriteHeapStmt("v", new ValueExp(new IntValue(30))).execute(state);

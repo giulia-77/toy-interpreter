@@ -17,8 +17,8 @@ public record WhileStmt(IExp cond, IStmt body) implements IStmt {
         }
         if (boolVal.val()) {
             IStack<IStmt> stack = state.getExeStack();
-            stack.push(this);
-            stack.push(body);
+            stack.push(this); //pun pe stiva instr while curenta
+            stack.push(body); //pun pe stiva corpul buclei a.i. cand fac pop() sa se execute prima data body ca sa poata fi reevaluata conditia
         }
         return state;
     }

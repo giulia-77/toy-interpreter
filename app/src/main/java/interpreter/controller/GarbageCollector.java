@@ -11,14 +11,16 @@ import java.util.stream.Collectors;
 
 public final class GarbageCollector {
     private GarbageCollector() {}
-
+    //ia toate val din symTable, filtreaza doar cele de tip refValue si le colecteaza adresele
+    //intr un set fara duplicate
     public static Set<Integer> getAddrFromSymTable(Collection<IValue> symTableValues) {
         return symTableValues.stream()
                 .filter(v -> v instanceof RefValue)
                 .map(v -> ((RefValue) v).address())
                 .collect(Collectors.toSet());
     }
-
+//păstrează în heap doar adresele care apar direct în symTableAddr
+    //daca de ex am Ref Ref int a la adresa 2 si acolo se afla (1,int), adresa 1 nu e direct in symTable asa ca ar fi stearsa gresit
     public static Map<Integer, IValue> unsafeGarbageCollector(Set<Integer> symTableAddr,
                                                               Map<Integer, IValue> heap) {
         return heap.entrySet().stream()
@@ -29,6 +31,10 @@ public final class GarbageCollector {
     public static Set<Integer> reachableAddresses(Set<Integer> roots, Map<Integer, IValue> heap) {
         Set<Integer> reachable = new HashSet<>(roots);
         boolean changed;
+        //verifica fiecare adresa deja marcata in reachable si cauta valoarea ei în heap
+        //daca valoarea stocats la acea adresa e un RefValue ia targetAddr
+        //daca nu e deja in reachable, il pune în nextAddresses
+        //daca s-au gasit adrese noi le adauga in reachable si repeta pana cand nu mai apare nimic nou
         do {
             changed = false;
             Set<Integer> nextAddresses = new HashSet<>();
@@ -48,7 +54,8 @@ public final class GarbageCollector {
         } while (changed);
         return reachable;
     }
-
+//calculeaza toate adresele accesibile prin reachableAddresses(symTableAddr, heap)
+// apoi filtreaza heap-ul pastrand doar intrarile a caror cheie (e.getKey()) se regaseste în reachable
     public static Map<Integer, IValue> safeGarbageCollector(Set<Integer> symTableAddr,
                                                             Map<Integer, IValue> heap) {
         Set<Integer> reachable = reachableAddresses(symTableAddr, heap);
